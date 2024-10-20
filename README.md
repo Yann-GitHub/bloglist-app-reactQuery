@@ -1,11 +1,11 @@
-# Bloglist App
+# Bloglist App with React Query
 
-This is a simple bloglist application built using Node.js and Express. It allows users to create, read, update, and delete blog posts.
+This is a refactored version of the [bloglist-fullstack-app](https://github.com/Yann-GitHub/bloglist-fullstack-app) using Redux for state management and a more modular file structure.
 
 ## Installation
 
-1. Clone the repository: `git clone git@github.com:Yann-GitHub/bloglist-fullstack-app.git`
-2. Navigate to the project directory: `cd bloglist-app`
+1. Clone the repository: `git clone git@github.com:Yann-GitHub/bloglist-app-reactQuery.git`
+2. Navigate to the project directory: `cd bloglist-app-reactQuery`
 3. Install dependencies for both backend and frontend: `npm install`
 
 ## Usage
@@ -19,8 +19,8 @@ This is a simple bloglist application built using Node.js and Express. It allows
 - Node.js
 - Express
 - MongoDB
-- HTML
-- CSS
+- React
+- React Query
 
 ## License
 
