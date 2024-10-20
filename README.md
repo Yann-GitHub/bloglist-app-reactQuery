@@ -1,6 +1,6 @@
 # Bloglist App with React Query
 
-This is a refactored version of the [bloglist-fullstack-app](https://github.com/Yann-GitHub/bloglist-fullstack-app) using Redux for state management and a more modular file structure.
+This is a refactored version of the [bloglist-fullstack-app](https://github.com/Yann-GitHub/bloglist-fullstack-app) using React Query for data fetching and caching, and React hooks useReducer and useContext for state management.
 
 ## Installation
 

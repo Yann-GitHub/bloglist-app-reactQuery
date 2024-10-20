@@ -1,20 +1,20 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
-
-import { useNotificationDispatch } from "./NotificationContext";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNotificationDispatch } from "./contexts/NotificationContext";
+import { useUserDispatch, useUserValue } from "./contexts/UserContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import blogService from "./services/blogs";
-// import noteService from "./request";
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-  // const [notificationMessage, setNotificationMessage] = useState(null);
+  const userDispatch = useUserDispatch();
+
   const notificationDispatch = useNotificationDispatch();
+  const { user, username, token } = useUserValue();
+
   const queryClient = useQueryClient();
 
   // Check if the user is already logged in
@@ -22,20 +22,14 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      userDispatch({ type: "LOGIN", payload: user });
+      console.log("User1111:", user);
       blogService.setToken(user.token);
     }
-  }, []);
-
-  // Get all notes from the server
-  // useEffect(() => {
-  //   if (user) {
-  //     blogService.getAll().then((blogs) => setBlogs(blogs));
-  //   }
-  // }, [user]);
+  }, [userDispatch]);
 
   const handleLogout = () => {
-    setUser(null);
+    userDispatch({ type: "LOGOUT" });
     window.localStorage.clear();
     blogService.setToken(null);
     notificationDispatch({
@@ -53,16 +47,8 @@ const App = () => {
     queryKey: ["blogs"],
     queryFn: blogService.getAll,
     refetchOnWindowFocus: false,
-    enabled: !!user, // Fetch data only if user is logged in
+    enabled: !!username, // Fetch data only if user is logged in
   });
-
-  // console.log(JSON.parse(JSON.stringify(result)));
-
-  // useEffect(() => {
-  //   if (blogs) {
-  //     console.log("Blogs fetched:", blogs);
-  //   }
-  // }, [blogs]);
 
   // Loading state of the query
   if (result.isLoading) {
@@ -75,7 +61,10 @@ const App = () => {
   }
 
   const blogs = result.data;
-  console.log(blogs);
+  // console.log("Blogs:", blogs);
+  // console.log("User:", user);
+  // console.log("Username:", username);
+  // console.log("Token:", token);
 
   return (
     <div>
@@ -83,31 +72,22 @@ const App = () => {
       <h2>Blogs</h2>
 
       {!user ? (
-        <LoginForm setUser={setUser} />
+        <LoginForm />
       ) : (
         <div>
           <div className="logout">
-            <span>{`👨🏻 ${user.username} logged in`}</span>
+            <span>{`👨🏻 ${username} logged in`}</span>
             <button onClick={handleLogout}>logout</button>
           </div>
           <Togglable buttonLabel={"Create new blog"} ref={blogFormRef}>
-            <BlogForm
-              // setBlogs={setBlogs}
-              // blogs={blogs}
-              blogFormRef={blogFormRef}
-            />
+            <BlogForm blogFormRef={blogFormRef} />
           </Togglable>
 
           {blogs
             .slice() // Copy the array to avoid mutating the original array
             .sort((a, b) => b.likes - a.likes) // Sort by likes in descending order
             .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                // blogs={blogs}
-                // setBlogs={setBlogs}
-              />
+              <Blog key={blog.id} blog={blog} />
             ))}
         </div>
       )}

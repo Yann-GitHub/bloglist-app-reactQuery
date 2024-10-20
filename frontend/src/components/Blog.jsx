@@ -1,15 +1,10 @@
 import { useState } from "react";
-// import blogService from "../services/blogs";
-import {
-  useNotificationDispatch,
-  useNotificationValue,
-} from "../NotificationContext";
+import { useNotificationDispatch } from "../contexts/NotificationContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 
 const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
 
   const queryClient = useQueryClient();
   const notificationDispatch = useNotificationDispatch();
@@ -27,9 +22,7 @@ const Blog = ({ blog }) => {
       const blogs = queryClient.getQueryData(["blogs"]);
       queryClient.setQueryData(
         ["blogs"],
-        // blogs.filter((b) => b.id !== blog.id)
         blogs.filter((b) => b.id !== variables)
-        // blogs.map((b) => (b.id !== updatedBlog.id ? b : updatedBlog))
       );
       notificationDispatch({
         type: "CREATE",
@@ -49,33 +42,6 @@ const Blog = ({ blog }) => {
       }, 4000);
     },
   });
-
-  //////////////////////////
-  // const handleDelete = async () => {
-  //   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-  //     try {
-  //       await blogService.deleteBlog(blog.id);
-  //       setBlogs(blogs.filter((b) => b.id !== blog.id));
-  //       notificationDispatch({
-  //         type: "CREATE",
-  //         payload: `Blog deleted successfully 🗑`,
-  //       });
-  //       setTimeout(() => {
-  //         notificationDispatch({ type: "CLEAR" });
-  //       }, 4000);
-  //     } catch (error) {
-  //       console.log(error);
-  //       notificationDispatch({
-  //         type: "ERROR",
-  //         payload: `Failed to delete blog: ${error.response.data.error}`,
-  //       });
-  //       setTimeout(() => {
-  //         notificationDispatch({ type: "CLEAR" });
-  //       }, 4000);
-  //     }
-  //   }
-  // };
-  //////////////////////////
 
   const updateBlogMutation = useMutation({
     mutationFn: ({ id, updatedBlogData }) =>
@@ -109,33 +75,6 @@ const Blog = ({ blog }) => {
     },
   });
 
-  //////////////////////////
-  // const handleLike = async () => {
-  //   if (isLoading) return; // Prevent multiple clicks while the request is in progress
-
-  //   setIsLoading(true);
-  //   try {
-  //     const updatedBlog = await blogService.updateBlog(blog.id, {
-  //       ...blog,
-  //       likes: blog.likes + 1,
-  //     });
-  //     setBlogs(blogs.map((b) => (b.id !== blog.id ? b : updatedBlog)));
-  //     console.log("Updated Blog:", updatedBlog);
-  //   } catch (error) {
-  //     console.log(error);
-  //     notificationDispatch({
-  //       type: "ERROR",
-  //       payload: `Failed to update likes: ${error.response.data.error}`,
-  //     });
-  //     setTimeout(() => {
-  //       notificationDispatch({ type: "CLEAR" });
-  //     }, 4000);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-  //////////////////////////
-
   const handleDelete = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       deleteBlogMutation.mutate(blog.id);
@@ -143,7 +82,6 @@ const Blog = ({ blog }) => {
   };
 
   const handleLike = () => {
-    // updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 });
     updateBlogMutation.mutate({
       id: blog.id,
       updatedBlogData: { ...blog, likes: blog.likes + 1 },

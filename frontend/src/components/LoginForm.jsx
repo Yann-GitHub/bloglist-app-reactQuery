@@ -1,17 +1,15 @@
 import { useState } from "react";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
-import PropTypes from "prop-types";
-import {
-  useNotificationDispatch,
-  useNotificationValue,
-} from "../NotificationContext";
+import { useNotificationDispatch } from "../contexts/NotificationContext";
+import { useUserDispatch } from "../contexts/UserContext";
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
   const notificationDispatch = useNotificationDispatch();
+  const userDispatch = useUserDispatch();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -24,7 +22,7 @@ const LoginForm = ({ setUser }) => {
 
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+      userDispatch({ type: "LOGIN", payload: user });
       setUsername("");
       setPassword("");
       notificationDispatch({
@@ -75,11 +73,6 @@ const LoginForm = ({ setUser }) => {
       <br />
     </>
   );
-};
-
-LoginForm.propTypes = {
-  // setNotificationMessage: PropTypes.func.isRequired,
-  setUser: PropTypes.func.isRequired,
 };
 
 export default LoginForm;

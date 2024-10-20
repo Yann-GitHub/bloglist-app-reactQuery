@@ -27,10 +27,6 @@ blogsRouter.get("/", async (request, response, next) => {
   }
 });
 
-// Use the verifyToken middleware for all routes below this line
-// if the token is valid, the middleware will extract the user object from the token and add it to the request object
-// blogsRouter.use(authenticateToken);
-
 blogsRouter.post("/", async (request, response, next) => {
   const body = request.body;
   const user = await User.findById(request.user.id); // Find the user who created the blog

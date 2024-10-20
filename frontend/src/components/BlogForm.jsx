@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  useNotificationDispatch,
-  useNotificationValue,
-} from "../NotificationContext";
+import { useNotificationDispatch } from "../contexts/NotificationContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 
@@ -16,7 +13,6 @@ const BlogForm = ({ blogFormRef }) => {
 
   const addBlogMutation = useMutation({
     mutationFn: blogService.createBlog,
-
     onSuccess: (newBlog) => {
       // This will update the cache with the new data
       // queryClient.invalidateQueries("blogs");
@@ -43,40 +39,6 @@ const BlogForm = ({ blogFormRef }) => {
     setUrl("");
     blogFormRef.current.toggleVisibility();
   };
-
-  // const handleCreateBlog = async (event) => {
-  //   event.preventDefault();
-
-  //   try {
-  //     const newBlog = await blogService.createBlog({
-  //       title,
-  //       author,
-  //       url,
-  //     });
-
-  //     setBlogs(blogs.concat(newBlog));
-  //     setTitle("");
-  //     setAuthor("");
-  //     setUrl("");
-  //     notificationDispatch({
-  //       type: "CREATE",
-  //       payload: "You have successfully created a blog 🎉",
-  //     });
-  //     setTimeout(() => {
-  //       notificationDispatch({ type: "CLEAR" });
-  //     }, 4000);
-  //     blogFormRef.current.toggleVisibility();
-  //   } catch (exception) {
-  //     console.log(exception);
-  //     notificationDispatch({
-  //       type: "ERROR",
-  //       payload: "Something wrong here 🤷🏻‍♂️",
-  //     });
-  //     setTimeout(() => {
-  //       notificationDispatch({ type: "CLEAR" });
-  //     }, 4000);
-  //   }
-  // };
 
   return (
     <>

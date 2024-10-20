@@ -1,7 +1,4 @@
-import {
-  useNotificationDispatch,
-  useNotificationValue,
-} from "../NotificationContext";
+import { useNotificationValue } from "../contexts/NotificationContext";
 
 const Notification = () => {
   const notification = useNotificationValue();
@@ -9,11 +6,6 @@ const Notification = () => {
   if (!notification.message) {
     return null;
   }
-  // if (message === null) {
-  //   return;
-  // }
-  // const errorNotificationClass =
-  //   message.type === "error" ? "errorNotification" : "";
 
   const errorNotificationClass =
     notification.type === "error" ? "errorNotification" : "";
