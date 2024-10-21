@@ -8,7 +8,7 @@ const setToken = (newToken) => {
   return;
 };
 
-const getAll = () => {
+const getAll = async () => {
   const config = {
     headers: {
       Authorization: token,
@@ -16,8 +16,16 @@ const getAll = () => {
     },
   };
 
-  const request = axios.get(baseUrl, config);
-  return request.then((response) => response.data);
+  try {
+    const response = await axios.get(baseUrl, config);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching blogs:",
+      error.response ? error.response.data : error.message
+    );
+    throw error; // Propagate the error so the caller can handle it
+  }
 };
 
 const createBlog = async (newBlog) => {
