@@ -39,4 +39,15 @@ usersRouter.get("/", async (request, response) => {
   }
 });
 
+usersRouter.get("/:id", async (request, response) => {
+  try {
+    const user = await User.findById(request.params.id).populate("blogs", {
+      title: 1,
+    });
+    response.json(user);
+  } catch (exception) {
+    response.status(404).json({ error: "User not found" });
+  }
+});
+
 module.exports = usersRouter;
