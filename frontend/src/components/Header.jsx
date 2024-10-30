@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { useUserDispatch, useUserValue } from "../contexts/UserContext";
 import { useNotificationDispatch } from "../contexts/NotificationContext";
 import blogService from "../services/blogs";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { user, username, toker } = useUserValue();
+  const { user, username, token } = useUserValue();
   const userDispatch = useUserDispatch();
   const notificationDispatch = useNotificationDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     userDispatch({ type: "LOGOUT" });
@@ -19,6 +21,7 @@ const Header = () => {
     setTimeout(() => {
       notificationDispatch({ type: "CLEAR" });
     }, 4000);
+    navigate("/");
   };
 
   return (
@@ -39,7 +42,6 @@ const Header = () => {
           </div>
         </nav>
       )}
-      {/* <h1>Blog App</h1> */}
     </div>
   );
 };

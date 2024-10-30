@@ -3,6 +3,7 @@ import loginService from "../services/login";
 import blogService from "../services/blogs";
 import { useNotificationDispatch } from "../contexts/NotificationContext";
 import { useUserDispatch } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [password, setPassword] = useState("");
@@ -10,6 +11,7 @@ const LoginForm = () => {
 
   const notificationDispatch = useNotificationDispatch();
   const userDispatch = useUserDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -25,6 +27,7 @@ const LoginForm = () => {
       userDispatch({ type: "LOGIN", payload: user });
       setUsername("");
       setPassword("");
+      navigate("/");
       notificationDispatch({
         type: "CREATE",
         payload: `You are logged in 🎉`,
@@ -48,10 +51,11 @@ const LoginForm = () => {
 
   return (
     <>
-      <form onSubmit={handleLogin}>
+      <form className="login-form" onSubmit={handleLogin}>
         <div>
-          Username
+          Username{" "}
           <input
+            className="input-login"
             type="text"
             placeholder="Username"
             value={username}
@@ -59,8 +63,9 @@ const LoginForm = () => {
           />
         </div>
         <div>
-          Password
+          Password{" "}
           <input
+            className="input-login"
             type="password"
             placeholder="Password"
             value={password}

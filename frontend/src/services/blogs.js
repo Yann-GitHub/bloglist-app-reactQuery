@@ -100,5 +100,4 @@ export default {
   createBlog,
   updateBlog,
   deleteBlog,
-  setToken,
 };

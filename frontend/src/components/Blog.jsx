@@ -91,7 +91,7 @@ const Blog = ({ blog }) => {
   return (
     <div className="blog">
       <div className="blog__title">
-        {blog.title}
+        {blog.title}{" "}
         <button onClick={toggleVisibility}>{visible ? "hide" : "view"}</button>
       </div>
       <div className={`blog__info ${optionalClass}`}>
