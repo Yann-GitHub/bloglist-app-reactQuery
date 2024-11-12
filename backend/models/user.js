@@ -1,4 +1,3 @@
-// Used for data modeling, validation and buisness logic
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({

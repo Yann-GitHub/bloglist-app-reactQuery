@@ -1,18 +1,21 @@
-// import { useUserValue } from "../contexts/UserContext";
 import { Link } from "react-router-dom";
 import { useUserValue } from "../contexts/UserContext";
 import usersService from "../services/users";
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Loader from "../components/Loader";
+import { useNavigate } from "react-router-dom";
+import { useNotificationDispatch } from "../contexts/NotificationContext";
+import { useUserDispatch } from "../contexts/UserContext";
+import { setToken } from "../services/axiosConfig";
 
 const Users = () => {
-  const { token } = useUserValue();
+  const navigate = useNavigate();
+  const userDispatch = useUserDispatch();
+  const notificationDispatch = useNotificationDispatch();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (token) {
-      usersService.setToken(token);
-    }
-  }, [token]);
+  const { token } = useUserValue();
 
   const { isLoading, data, error } = useQuery({
     queryKey: ["users"],
@@ -21,20 +24,33 @@ const Users = () => {
     enabled: !!token,
   });
 
+  useEffect(() => {
+    if (error) {
+      if (error.response.data.error === "token expired") {
+        userDispatch({ type: "LOGOUT" });
+        window.localStorage.clear();
+        notificationDispatch({
+          type: "ERROR",
+          payload: "Session expired. Please log in again. 🕒",
+        });
+        queryClient.removeQueries(["users"]);
+        setTimeout(() => {
+          notificationDispatch({ type: "CLEAR" });
+        }, 4000);
+        setToken(null);
+        navigate("/");
+      } else {
+        queryClient.invalidateQueries(["users"]);
+        navigate("/error");
+      }
+    }
+  }, [error, userDispatch, notificationDispatch, queryClient, navigate]);
+
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  //   if (!users) {
-  //     return <div>No users found</div>;
-  //   }
-
-  if (error) {
-    return <div>Error fetching users</div>;
+    return <Loader />;
   }
 
   const users = data || [];
-  console.log(users);
 
   return (
     <div>

@@ -112,9 +112,9 @@ blogsRouter.put("/:id", async (request, response, next) => {
     }
 
     // Check if the user is authorized to update the blog - object IDs are compared as strings
-    if (user._id.toString() !== blog.user.toString()) {
-      return response.status(401).send({ error: "Unauthorized" });
-    }
+    // if (user._id.toString() !== blog.user.toString()) {
+    //   return response.status(401).send({ error: "Unauthorized" });
+    // }
 
     // Update the blog in the database
     const updatedBlog = await Blog.findByIdAndUpdate(
@@ -137,6 +137,30 @@ blogsRouter.put("/:id", async (request, response, next) => {
   } catch (exception) {
     console.error(exception); // Log the exception for debugging
     next(exception);
+  }
+});
+
+blogsRouter.post("/:id/comments", async (request, response, next) => {
+  const { id } = request.params;
+  const { content } = request.body;
+
+  try {
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return response.status(404).json({ error: "Blog not found" });
+    }
+
+    const comment = {
+      content,
+      date: new Date(),
+    };
+
+    blog.comments = blog.comments.concat(comment);
+    const updatedBlog = await blog.save();
+
+    response.status(201).json(updatedBlog);
+  } catch (error) {
+    next(error);
   }
 });
 

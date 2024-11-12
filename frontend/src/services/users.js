@@ -1,51 +1,31 @@
-import axios from "axios";
-const baseUrl = "/api/users";
+import { axiosInstanceWithToken } from "./axiosConfig";
 
-let token = null;
-
-const setToken = (newToken) => {
-  token = `bearer ${newToken}`;
-  return;
-};
+const baseUrl = "/users";
 
 const getAll = async () => {
-  const config = {
-    headers: {
-      Authorization: token,
-      "Content-Type": "application/json",
-    },
-  };
-
   try {
-    const response = await axios.get(baseUrl, config);
+    const response = await axiosInstanceWithToken.get(baseUrl);
     return response.data;
   } catch (error) {
     console.error(
       "Error fetching blogs:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Propagate the error so the caller can handle it
+    throw error;
   }
 };
 
 const getUser = async (id) => {
-  const config = {
-    headers: {
-      Authorization: token,
-      "Content-Type": "application/json",
-    },
-  };
-
   try {
-    const response = await axios.get(`${baseUrl}/${id}`, config);
+    const response = await axiosInstanceWithToken.get(`${baseUrl}/${id}`);
     return response.data;
   } catch (error) {
     console.error(
       "Error fetching user:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Propagate the error so the caller can handle it
+    throw error;
   }
 };
 
-export default { getAll, getUser, setToken };
+export default { getAll, getUser };

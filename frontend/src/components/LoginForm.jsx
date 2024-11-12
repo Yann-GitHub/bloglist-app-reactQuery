@@ -1,9 +1,9 @@
 import { useState } from "react";
 import loginService from "../services/login";
-import blogService from "../services/blogs";
 import { useNotificationDispatch } from "../contexts/NotificationContext";
 import { useUserDispatch } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import { setToken } from "../services/axiosConfig";
 
 const LoginForm = () => {
   const [password, setPassword] = useState("");
@@ -23,7 +23,7 @@ const LoginForm = () => {
       });
 
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      blogService.setToken(user.token);
+      setToken(user.token);
       userDispatch({ type: "LOGIN", payload: user });
       setUsername("");
       setPassword("");
@@ -36,7 +36,6 @@ const LoginForm = () => {
         notificationDispatch({ type: "CLEAR" });
       }, 4000);
     } catch (error) {
-      console.log(error);
       notificationDispatch({
         type: "ERROR",
         payload: "⛔️ Wrong credentials, try again !!",

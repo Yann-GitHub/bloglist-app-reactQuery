@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
+const { authenticateToken } = require("../utils/middleware");
 
 usersRouter.post("/", async (request, response, next) => {
   const { username, name, password } = request.body;
@@ -27,6 +28,10 @@ usersRouter.post("/", async (request, response, next) => {
     next(exception);
   }
 });
+
+// Use the verifyToken middleware for all routes below this line
+// if the token is valid, the middleware will extract the user object from the token and add it to the request object
+usersRouter.use(authenticateToken);
 
 usersRouter.get("/", async (request, response) => {
   try {

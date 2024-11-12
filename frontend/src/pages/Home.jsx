@@ -1,32 +1,25 @@
-import { useEffect, useRef, useState } from "react";
-import Blog from "../components/Blog";
-// import LoginForm from "../components/LoginForm";
-// import Notification from "../components/Notification";
-import BlogForm from "../components/BlogForm";
-import Togglable from "../components/Togglable";
+import { useEffect, useRef } from "react";
 import { useNotificationDispatch } from "../contexts/NotificationContext";
 import { useUserDispatch, useUserValue } from "../contexts/UserContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
+import { setToken } from "../services/axiosConfig";
+import { useNavigate, Link } from "react-router-dom";
+import Loader from "../components/Loader";
+import BlogForm from "../components/BlogForm";
+import Togglable from "../components/Togglable";
 
 const Home = () => {
+  const navigate = useNavigate();
   const userDispatch = useUserDispatch();
-
   const notificationDispatch = useNotificationDispatch();
+
+  const queryClient = useQueryClient();
   const { user, username, token } = useUserValue();
 
-  //   const handleLogout = () => {
-  //     userDispatch({ type: "LOGOUT" });
-  //     window.localStorage.clear();
-  //     blogService.setToken(null);
-  //     notificationDispatch({
-  //       type: "CREATE",
-  //       payload: `Logged out. Goodbye!👋🏼`,
-  //     });
-  //     setTimeout(() => {
-  //       notificationDispatch({ type: "CLEAR" });
-  //     }, 4000);
-  //   };
+  if (!token) {
+    return null;
+  }
 
   const blogFormRef = useRef();
 
@@ -34,93 +27,56 @@ const Home = () => {
     queryKey: ["blogs"],
     queryFn: blogService.getAll,
     refetchOnWindowFocus: false,
-    enabled: !!username,
+    enabled: !!token,
   });
 
-  // Check if the user is already logged in and handle errors from the query - already moved to parent component App.jsx
-  //   useEffect(() => {
-  //     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-  //     if (loggedUserJSON) {
-  //       const user = JSON.parse(loggedUserJSON);
-  //       userDispatch({ type: "LOGIN", payload: user });
-  //       blogService.setToken(user.token);
-  //     }
+  useEffect(() => {
+    if (error) {
+      if (error.response.data.error === "token expired") {
+        userDispatch({ type: "LOGOUT" });
+        window.localStorage.clear();
+        notificationDispatch({
+          type: "ERROR",
+          payload: "Session expired. Please log in again. 🕒",
+        });
+        queryClient.removeQueries(["blogs"]);
+        setTimeout(() => {
+          notificationDispatch({ type: "CLEAR" });
+        }, 4000);
+        setToken(null);
+        navigate("/");
+        return;
+      }
 
-  //     if (error) {
-  //       if (
-  //         error.response &&
-  //         (error.response.status === 401 ||
-  //           error.response.data.error === "token invalid")
-  //       ) {
-  //         handleLogout();
-  //         notificationDispatch({
-  //           type: "ERROR",
-  //           payload: "Session expired or invalid token. Please log in again.",
-  //         });
-  //         setTimeout(() => {
-  //           notificationDispatch({ type: "CLEAR" });
-  //         }, 4000);
-  //         notificationDispatch({
-  //           type: "ERROR",
-  //           payload: `Failed to fetch blogs: ${
-  //             error.response ? error.response.data.error : error.message
-  //           }`,
-  //         });
-  //         setTimeout(() => {
-  //           notificationDispatch({ type: "CLEAR" });
-  //         }, 4000);
-  //       }
-  //     }
-  //   }, [error, userDispatch, notificationDispatch]);
+      queryClient.invalidateQueries(["blogs"]);
+      navigate("/error");
+    }
+  }, [error, userDispatch, notificationDispatch, queryClient, navigate]);
 
-  // Loading state of the query
   if (isLoading) {
-    return <div>loading data...</div>;
-  }
-
-  // Error state of the query
-  if (error) {
-    return <div>error fetching data1</div>;
+    return <Loader />;
   }
 
   const blogs = data || [];
 
   return (
     <div>
-      {/* <Notification /> */}
       <h2>Blogs</h2>
 
-      {/* {!user ? (
-        <LoginForm />
-      ) : (
-        <div>
-          <Togglable buttonLabel={"Create new blog"} ref={blogFormRef}>
-            <BlogForm blogFormRef={blogFormRef} />
-          </Togglable>
-
+      <div>
+        <Togglable buttonLabel={"Create new blog"} ref={blogFormRef}>
+          <BlogForm blogFormRef={blogFormRef} />
+        </Togglable>
+        <ul className="blogList">
           {blogs
             .slice() // Copy the array to avoid mutating the original array
             .sort((a, b) => b.likes - a.likes) // Sort by likes in descending order
             .map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <li key={blog.id}>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </li>
             ))}
-        </div>
-      )} */}
-      <div>
-        {/* <div className="logout">
-            <span>{`👨🏻 ${username} logged in`}</span>
-            <button onClick={handleLogout}>logout</button>
-          </div> */}
-        <Togglable buttonLabel={"Create new blog"} ref={blogFormRef}>
-          <BlogForm blogFormRef={blogFormRef} />
-        </Togglable>
-
-        {blogs
-          .slice() // Copy the array to avoid mutating the original array
-          .sort((a, b) => b.likes - a.likes) // Sort by likes in descending order
-          .map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+        </ul>
       </div>
     </div>
   );

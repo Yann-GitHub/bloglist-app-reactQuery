@@ -54,6 +54,9 @@ const authenticateToken = (request, response, next) => {
     next();
   } catch (error) {
     console.error("Token verification error:", error);
+    if (error.name === "TokenExpiredError") {
+      return response.status(401).json({ error: "token expired" });
+    }
     return response.status(401).json({ error: "token invalid" });
   }
 };

@@ -1,66 +1,37 @@
-import axios from "axios";
-const baseUrl = "/api/blogs";
-
-let token = null;
-
-const setToken = (newToken) => {
-  token = `bearer ${newToken}`;
-  return;
-};
+import { axiosInstanceWithToken } from "./axiosConfig";
+const baseUrl = "/blogs";
 
 const getAll = async () => {
-  const config = {
-    headers: {
-      Authorization: token,
-      "Content-Type": "application/json",
-    },
-  };
-
   try {
-    const response = await axios.get(baseUrl, config);
+    const response = await axiosInstanceWithToken.get(baseUrl);
     return response.data;
   } catch (error) {
     console.error(
       "Error fetching blogs:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Propagate the error so the caller can handle it
+    throw error;
   }
 };
 
 const createBlog = async (newBlog) => {
-  const config = {
-    headers: {
-      Authorization: token,
-      "Content-Type": "application/json",
-    },
-  };
-
   try {
-    const response = await axios.post(baseUrl, newBlog, config);
+    const response = await axiosInstanceWithToken.post(baseUrl, newBlog);
     return response.data;
   } catch (error) {
     console.error(
       "Error creating blog:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Propagate the error so the caller can handle it
+    throw error;
   }
 };
 
 const updateBlog = async (id, updatedBlogData) => {
-  const config = {
-    headers: {
-      Authorization: token,
-      "Content-Type": "application/json",
-    },
-  };
-
   try {
-    const response = await axios.put(
+    const response = await axiosInstanceWithToken.put(
       `${baseUrl}/${id}`,
-      updatedBlogData,
-      config
+      updatedBlogData
     );
     return response.data;
   } catch (error) {
@@ -68,36 +39,45 @@ const updateBlog = async (id, updatedBlogData) => {
       "Error updating blog:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Propagate the error so the caller can handle it
+    throw error;
   }
 };
 
 const deleteBlog = async (id) => {
-  if (!token) {
-    throw new Error("No authorization token provided");
-  }
-
-  const config = {
-    headers: {
-      Authorization: token,
-    },
-  };
-
   try {
-    await axios.delete(`${baseUrl}/${id}`, config);
+    const response = await axiosInstanceWithToken.delete(`${baseUrl}/${id}`);
+    return response.data;
   } catch (error) {
     console.error(
       "Error deleting blog:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Propager l'erreur pour que l'appelant puisse la gérer
+    throw error;
+  }
+};
+
+const addComment = async (id, comment) => {
+  console.log("jhdfjhdfjhdfjhdfjhdfjh");
+  console.log(comment);
+  try {
+    const response = await axiosInstanceWithToken.post(
+      `${baseUrl}/${id}/comments`,
+      comment
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error adding comment:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
   }
 };
 
 export default {
   getAll,
-  setToken,
   createBlog,
   updateBlog,
   deleteBlog,
+  addComment,
 };

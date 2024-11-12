@@ -1,19 +1,20 @@
 import { Link } from "react-router-dom";
 import { useUserDispatch, useUserValue } from "../contexts/UserContext";
 import { useNotificationDispatch } from "../contexts/NotificationContext";
-import blogService from "../services/blogs";
 import { useNavigate } from "react-router-dom";
+import { setToken } from "../services/axiosConfig";
 
 const Header = () => {
-  const { user, username, token } = useUserValue();
   const userDispatch = useUserDispatch();
   const notificationDispatch = useNotificationDispatch();
   const navigate = useNavigate();
 
+  const { user, username, token } = useUserValue();
+
   const handleLogout = () => {
     userDispatch({ type: "LOGOUT" });
     window.localStorage.clear();
-    blogService.setToken(null);
+    setToken(null);
     notificationDispatch({
       type: "CREATE",
       payload: `Logged out. Goodbye!👋🏼`,
