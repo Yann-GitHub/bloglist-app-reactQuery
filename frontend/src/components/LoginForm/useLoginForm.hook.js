@@ -1,11 +1,11 @@
 import { useState } from "react";
-import loginService from "../services/login";
-import { useNotificationDispatch } from "../contexts/NotificationContext";
-import { useUserDispatch } from "../contexts/UserContext";
+import { useNotificationDispatch } from "../../contexts/NotificationContext";
+import { useUserDispatch } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "../services/axiosConfig";
+import { setToken } from "../../services/axiosConfig";
+import loginService from "../../services/login";
 
-const LoginForm = () => {
+export const useLoginForm = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
@@ -48,35 +48,11 @@ const LoginForm = () => {
     }
   };
 
-  return (
-    <>
-      <form className="login-form" onSubmit={handleLogin}>
-        <div>
-          Username{" "}
-          <input
-            className="input-login"
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div>
-          Password{" "}
-          <input
-            className="input-login"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <button type="submit">Login</button>
-      </form>
-      <br />
-    </>
-  );
+  return {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    handleLogin,
+  };
 };
-
-export default LoginForm;

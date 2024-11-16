@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const Error = () => {
+export const Error = () => {
   const navigate = useNavigate();
   return (
     <div className="error-wrapper">
@@ -11,5 +11,3 @@ const Error = () => {
     </div>
   );
 };
-
-export default Error;

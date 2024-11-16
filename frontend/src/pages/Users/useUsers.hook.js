@@ -1,20 +1,16 @@
-import { Link } from "react-router-dom";
-import { useUserValue } from "../contexts/UserContext";
-import usersService from "../services/users";
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
-import { useNotificationDispatch } from "../contexts/NotificationContext";
-import { useUserDispatch } from "../contexts/UserContext";
-import { setToken } from "../services/axiosConfig";
+import { useNotificationDispatch } from "../../contexts/NotificationContext";
+import { useUserDispatch, useUserValue } from "../../contexts/UserContext";
+import usersService from "../../services/users";
+import { setToken } from "../../services/axiosConfig";
 
-const Users = () => {
+export const useUsers = () => {
   const navigate = useNavigate();
   const userDispatch = useUserDispatch();
   const notificationDispatch = useNotificationDispatch();
   const queryClient = useQueryClient();
-
   const { token } = useUserValue();
 
   const { isLoading, data, error } = useQuery({
@@ -46,35 +42,5 @@ const Users = () => {
     }
   }, [error, userDispatch, notificationDispatch, queryClient, navigate]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  const users = data || [];
-
-  return (
-    <div>
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Blogs created</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>
-                <Link to={`/users/${user.id}`}>{user.username}</Link>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  return { isLoading, data };
 };
-
-export default Users;

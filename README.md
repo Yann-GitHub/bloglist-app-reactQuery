@@ -1,6 +1,6 @@
 # Bloglist App with React Query
 
-This is a refactored version of the [bloglist-fullstack-app](https://github.com/Yann-GitHub/bloglist-fullstack-app) using React Query for data fetching and caching, and React hooks useReducer and useContext for state management.
+This is a refactored version of the [bloglist-fullstack-app](https://github.com/Yann-GitHub/bloglist-fullstack-app) using React-Query for data fetching and caching, and React hooks useReducer and useContext for state management. This project also implements token-based authentication/validation.
 
 ## Installation
 
@@ -18,9 +18,10 @@ This is a refactored version of the [bloglist-fullstack-app](https://github.com/
 
 - Node.js
 - Express
-- MongoDB
+- MongoDB / Mongoose
 - React
-- React Query
+- React-Query
+- Token-based authentication/validation
 
 ## License
 

@@ -25,7 +25,7 @@ axiosInstanceWithToken.interceptors.request.use(
     //   return Promise.reject(new Error("Token expired"));
     // }
 
-    return config; // Retourner la configuration de la requête si aucune erreur n'est rencontrée
+    return config; // Return the config to the next interceptor
   },
   (error) => {
     return Promise.reject(error);

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNotificationDispatch } from "../contexts/NotificationContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import blogService from "../services/blogs";
+import { useNotificationDispatch } from "../../contexts/NotificationContext";
+import blogService from "../../services/blogs";
 
-const BlogForm = ({ blogFormRef }) => {
+export const useBlogForm = ({ blogFormRef }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -14,9 +14,6 @@ const BlogForm = ({ blogFormRef }) => {
   const addBlogMutation = useMutation({
     mutationFn: blogService.createBlog,
     onSuccess: (newBlog) => {
-      // This will update the cache with the new data
-      // queryClient.invalidateQueries("blogs");
-
       // This will update the cache with the new data without making a new api call
       const blogs = queryClient.getQueryData(["blogs"]);
       queryClient.setQueryData(["blogs"], blogs.concat(newBlog));
@@ -40,40 +37,13 @@ const BlogForm = ({ blogFormRef }) => {
     blogFormRef.current.toggleVisibility();
   };
 
-  return (
-    <>
-      <form onSubmit={handleCreateBlog}>
-        <div>
-          Title
-          <input
-            type="text"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div>
-          Author
-          <input
-            type="text"
-            placeholder="Author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
-        <div>
-          Url
-          <input
-            type="text"
-            placeholder="Url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-        </div>
-        <button type="submit">Save blog</button>
-      </form>
-    </>
-  );
+  return {
+    handleCreateBlog,
+    title,
+    setTitle,
+    author,
+    setAuthor,
+    url,
+    setUrl,
+  };
 };
-
-export default BlogForm;

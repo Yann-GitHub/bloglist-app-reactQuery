@@ -1,25 +1,18 @@
 import { useEffect, useRef } from "react";
-import { useNotificationDispatch } from "../contexts/NotificationContext";
-import { useUserDispatch, useUserValue } from "../contexts/UserContext";
+import { useNotificationDispatch } from "../../contexts/NotificationContext";
+import { useUserDispatch, useUserValue } from "../../contexts/UserContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import blogService from "../services/blogs";
-import { setToken } from "../services/axiosConfig";
-import { useNavigate, Link } from "react-router-dom";
-import Loader from "../components/Loader";
-import BlogForm from "../components/BlogForm";
-import Togglable from "../components/Togglable";
+import blogService from "../../services/blogs";
+import { setToken } from "../../services/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+export const useHome = () => {
   const navigate = useNavigate();
   const userDispatch = useUserDispatch();
   const notificationDispatch = useNotificationDispatch();
 
   const queryClient = useQueryClient();
   const { user, username, token } = useUserValue();
-
-  if (!token) {
-    return null;
-  }
 
   const blogFormRef = useRef();
 
@@ -53,33 +46,10 @@ const Home = () => {
     }
   }, [error, userDispatch, notificationDispatch, queryClient, navigate]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  const blogs = data || [];
-
-  return (
-    <div>
-      <h2>Blogs</h2>
-
-      <div>
-        <Togglable buttonLabel={"Create new blog"} ref={blogFormRef}>
-          <BlogForm blogFormRef={blogFormRef} />
-        </Togglable>
-        <ul className="blogList">
-          {blogs
-            .slice() // Copy the array to avoid mutating the original array
-            .sort((a, b) => b.likes - a.likes) // Sort by likes in descending order
-            .map((blog) => (
-              <li key={blog.id}>
-                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-              </li>
-            ))}
-        </ul>
-      </div>
-    </div>
-  );
+  return {
+    isLoading,
+    blogs: data || [],
+    blogFormRef,
+    token,
+  };
 };
-
-export default Home;

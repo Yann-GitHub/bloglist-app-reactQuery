@@ -1,6 +1,6 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
 
-const Togglable = forwardRef((props, ref) => {
+export const Togglable = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(true);
 
   // Conditional styling
@@ -28,5 +28,3 @@ const Togglable = forwardRef((props, ref) => {
     </div>
   );
 });
-
-export default Togglable;

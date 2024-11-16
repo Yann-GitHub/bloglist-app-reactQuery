@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNotificationDispatch } from "../contexts/NotificationContext";
-import { useUserDispatch, useUserValue } from "../contexts/UserContext";
+import { useNotificationDispatch } from "../../contexts/NotificationContext";
+import { useUserDispatch, useUserValue } from "../../contexts/UserContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import blogService from "../services/blogs";
-import { setToken } from "../services/axiosConfig";
+import blogService from "../../services/blogs";
+import { setToken } from "../../services/axiosConfig";
 import { useNavigate, useParams } from "react-router-dom";
 
-const Blog = () => {
-
+export const useBlog = () => {
   const queryClient = useQueryClient();
   const notificationDispatch = useNotificationDispatch();
   const userDispatch = useUserDispatch();
@@ -17,10 +16,8 @@ const Blog = () => {
   const { user, username, token } = useUserValue();
   const { id } = useParams();
 
-  // Try to get the blog data from the cached blogs list - without unnecessary api calls
   const cachedBlogs = queryClient.getQueryData(["blogs"]);
 
-  // Redirect to home if cachedBlogs is null - Browser refresh case
   useEffect(() => {
     if (!cachedBlogs) {
       navigate("/");
@@ -32,8 +29,6 @@ const Blog = () => {
   const deleteBlogMutation = useMutation({
     mutationFn: (id) => blogService.deleteBlog(id),
     onSuccess: (data, variables) => {
-
-      // This will update the cache with the new data without making a new api call
       const blogs = queryClient.getQueryData(["blogs"]);
       queryClient.setQueryData(
         ["blogs"],
@@ -63,8 +58,6 @@ const Blog = () => {
     mutationFn: ({ id, updatedBlogData }) =>
       blogService.updateBlog(id, updatedBlogData),
     onSuccess: (updateBlog) => {
-
-      // This will update the cache with the new data
       const blogs = queryClient.getQueryData(["blogs"]);
       queryClient.setQueryData(
         ["blogs"],
@@ -167,53 +160,12 @@ const Blog = () => {
     setComment("");
   };
 
-  if (!blog) {
-    return <div>Blog not found</div>;
-  }
-
-  return (
-    <>
-      <button onClick={() => navigate("/")}>Go back</button>
-      <div className="blog">
-        <h1 className="blog__title">
-          {blog.title}
-        </h1>
-        <div className={`blog__info `}>
-          <span>
-            <a href={blog.url} target="_blank" rel="noopener noreferrer">
-              {blog.url}
-            </a>
-          </span>
-          <span>{`Added by ${blog.author}`}</span>
-          <span>
-            {blog.likes} likes <button onClick={handleLike}>like</button>
-          </span>
-          {blog.user.username === username && (
-            <button onClick={handleDelete}>Delete</button>
-          )}
-          <h2>Comments</h2>
-          <form onSubmit={handleComment}>
-            <input
-              type="text"
-              value={comment}
-              placeholder="New comment"
-              onChange={(e) => setComment(e.target.value)}
-            />
-            <button type="submit">Add comment</button>
-          </form>
-          {blog.comments && (
-            <div className="blog__comments">
-              <ul>
-                {blog.comments.map((comment, index) => (
-                  <li key={index}>{comment.content}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    </>
-  );
+  return {
+    blog,
+    comment,
+    setComment,
+    handleDelete,
+    handleLike,
+    handleComment,
+  };
 };
-
-export default Blog;
