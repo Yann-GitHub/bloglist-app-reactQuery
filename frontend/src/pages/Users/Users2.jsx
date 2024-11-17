@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Loader } from "../../components/Loader";
 import Container from "react-bootstrap/esm/Container";
-import Table from "react-bootstrap/Table";
 import { useUsers } from "./useUsers.hook";
 
 export const Users = () => {
@@ -16,10 +15,10 @@ export const Users = () => {
   return (
     <Container>
       <h2>Users</h2>
-      <Table striped bordered hover>
+      <table>
         <thead>
           <tr>
-            <th>Name</th>
+            <th></th>
             <th>Blogs created</th>
           </tr>
         </thead>
@@ -33,7 +32,7 @@ export const Users = () => {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
     </Container>
   );
 };

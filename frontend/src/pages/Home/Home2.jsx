@@ -3,7 +3,6 @@ import { Loader } from "../../components/Loader";
 import { BlogForm } from "../../components/BlogForm";
 import { Togglable } from "../../components/Togglable";
 import Container from "react-bootstrap/esm/Container";
-import ListGroup from "react-bootstrap/ListGroup";
 import { useHome } from "./useHome.hook";
 
 export const Home = () => {
@@ -19,22 +18,22 @@ export const Home = () => {
 
   return (
     <Container>
-      <h2 className="color-primary">Blogs</h2>
+      <h2>Blogs</h2>
 
       <div>
         <Togglable buttonLabel={"Create new blog"} ref={blogFormRef}>
           <BlogForm blogFormRef={blogFormRef} />
         </Togglable>
-        <ListGroup>
+        <ul className="blogList">
           {blogs
             .slice() // Copy the array to avoid mutating the original array
             .sort((a, b) => b.likes - a.likes) // Sort by likes in descending order
             .map((blog) => (
-              <ListGroup.Item key={blog.id}>
+              <li key={blog.id}>
                 <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-              </ListGroup.Item>
+              </li>
             ))}
-        </ListGroup>
+        </ul>
       </div>
     </Container>
   );

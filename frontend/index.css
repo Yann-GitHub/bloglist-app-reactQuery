@@ -1,3 +1,5 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
 body {
   margin: 0;
   padding: 0;
@@ -10,7 +12,22 @@ body {
   margin-bottom: 20px;
 }
 
-.overlay {
+.user-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* padding: 10px;
+  padding-bottom: 0;
+  padding-top: 0; */
+}
+
+.user {
+  color: white;
+  text-transform: capitalize;
+  padding-right: 10px;
+}
+
+/* .overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -21,14 +38,23 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+} */
+
+.blury {
+  filter: blur(2px);
 }
 
-.toast {
+.successNotification {
   color: green;
-  background-color: white;
-  padding: 40px 50px;
-  border: 2px solid green;
+  /* background-color: red; */
+  /* padding: 40px 50px; */
+  border: 1px solid green;
   border-radius: 10px;
+}
+
+.errorNotification {
+  border: 1px solid red;
+  color: red;
 }
 
 .spinner {
@@ -50,10 +76,10 @@ body {
   }
 }
 
-.errorNotification {
+/* .errorNotification {
   border: 2px solid red;
   color: red;
-}
+} */
 
 .blog {
   border: 1px solid black;
@@ -77,12 +103,33 @@ body {
   display: none;
 }
 
-.navbar {
+/* .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #f0f0f0;
   padding: 10px;
+} */
+
+/* .nav-link {
+  padding-right: 10px;
+  text-decoration: none;
+  color: black;
+} */
+
+/* .nav-link:hover {
+  text-decoration: underline;
+} */
+
+.blog-form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 20px;
+  border-radius: 10px;
+  width: fit-content;
+  background-color: #f0f0f1;
+  border: 2px solid #f0f0f1;
 }
 
 .login-form {
@@ -101,16 +148,6 @@ body {
 
 .input-login {
   margin-bottom: 10px;
-}
-
-.nav-link {
-  padding-right: 10px;
-  text-decoration: none;
-  color: black;
-}
-
-.nav-link:hover {
-  text-decoration: underline;
 }
 
 .error-wrapper {

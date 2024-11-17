@@ -6,7 +6,7 @@ export function SharedLayout() {
   return (
     <div className="sharedLayout">
       <Header />
-      <main>
+      <main className="pt-4">
         <Outlet />
       </main>
       <Footer />
